@@ -14,4 +14,12 @@ class MyScalatraServlet extends StreamtrendsStack {
     </html>
   }
   
+  get("/trending") {
+    <html>
+      <body>
+        <h1>Trending Streams!</h1>
+        Say <a href="hello-scalate">hello to Scalate</a>.
+      </body>
+    </html>
+  }
 }
