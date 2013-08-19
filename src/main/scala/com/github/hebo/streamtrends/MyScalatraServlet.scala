@@ -14,10 +14,10 @@ class MyScalatraServlet extends StreamtrendsStack {
     </html>
   }
   
-  get("/trending") {
-    val streams = (1 to 10).map { _ => new TwitchStream }
-
-    contentType="text/html"
-    jade("/trending", "streams" -> streams)
-  }
+//  get("/trending") {
+//    val streams = (1 to 10).map { _ => new TwitchStream }
+//
+//    contentType="text/html"
+//    jade("/trending", "streams" -> streams)
+//  }
 }
