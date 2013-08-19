@@ -15,11 +15,9 @@ class MyScalatraServlet extends StreamtrendsStack {
   }
   
   get("/trending") {
-    <html>
-      <body>
-        <h1>Trending Streams!</h1>
-        Say <a href="hello-scalate">hello to Scalate</a>.
-      </body>
-    </html>
+    val streams = (1 to 10).map { _ => new TwitchStream }
+
+    contentType="text/html"
+    jade("/trending", "streams" -> streams)
   }
 }
