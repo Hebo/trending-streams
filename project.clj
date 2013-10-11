@@ -7,6 +7,7 @@
                  [http-kit "2.1.10"]
                  [org.clojure/data.json "0.2.3"]]
   :plugins [[lein-ring "0.8.5"]]
-  :ring {:handler trends.handler/app}
+  :ring {:handler trends.handler/app
+         :destroy trends.handler/shutdown}
   :profiles
   {:dev {:dependencies [[ring-mock "0.1.5"]]}})

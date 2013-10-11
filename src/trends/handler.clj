@@ -2,15 +2,27 @@
   (:use compojure.core)
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
-            [trends.streams :as streams]))
+            [trends.streams :as streams]
+            [util :as util]))
 
 (defroutes app-routes
-  (GET "/" [] (do
-    (println streams/aloha)
-    "Hello World"))
-  (GET "/lookup" [] (streams/lookup))
+  (GET "/" [] (apply str (last @streams/rankings)))
+  (GET "/lookup" [] (do
+                      (streams/lookup)
+                      "done!"))
   (route/resources "/")
   (route/not-found "Not Found"))
 
-(def app
-  (handler/site app-routes))
+
+
+(def app (handler/site app-routes))
+
+(defn start
+  []
+  (let [immediately 0
+       every-minute (* 60 1000)]
+    (util/periodically streams/lookup immediately every-minute)))
+
+(defn shutdown
+  []
+  (util/shutdown))
