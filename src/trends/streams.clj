@@ -22,7 +22,7 @@
   [res]
   (map parse-stream (get res "streams")))
 
-(defn lookup 
+(defn lookup
   "lookup streams"
   []
   (http/get "https://api.twitch.tv/kraken/streams?limit=5"
