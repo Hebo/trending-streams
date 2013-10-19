@@ -2,6 +2,12 @@
   (:require [org.httpkit.client :as http])
   (:require [clojure.data.json :as json]))
 
+(def sample-streams
+  [{:name   "hebo"
+    :title  "Hebo's Stream"
+    :viewers 5
+    :delta   1 }])
+
 (def rankings (atom []))
 (defn calculate-rankings
   [current]
