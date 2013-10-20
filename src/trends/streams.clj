@@ -1,28 +1,36 @@
 (ns trends.streams
   (:require [org.httpkit.client :as http])
-  (:require [clojure.data.json :as json]))
+  (:require [clojure.data.json :as json]
+            [util :as util]))
 
-(def sample-streams
-  [{:name   "hebo"
-    :title  "Hebo's Stream"
-    :viewers 5
-    :delta   1 }])
+(defn ^:private streams-difference
+  [[prev curr]]
+  (for [stream prev
+        :let [n (util/find-first #(= (get %1 :name) (get stream :name)) curr)]
+        :when (not (nil? n))]
+    {:stream n
+     :delta (- (:viewers n)
+               (:viewers stream))}))
 
-(def rankings (atom []))
+(defrecord Stream [name status viewers])
+(def history (atom []))
+
+(defn trending
+  "Get the current trending streams"
+  []
+  (streams-difference @history))
+
 (defn calculate-rankings
   [current]
-  (swap! rankings
+  (swap! history
          ; TODO: check insertion times and filter by that
-         (fn [r] (conj r current)))
-  (println (str "Rankings: " @rankings))
-  @rankings)
+         (fn [r] (take-last 2 (conj r current)))))
 
 (defn parse-stream
   [stream]
-    (str (get-in stream ["channel" "name"])
-         ":"
-         (get-in stream ["viewers"])
-         " "))
+  (Stream. (get-in stream ["channel" "name"])
+           (get-in stream ["channel" "status"])
+           (get-in stream ["viewers"])))
 
 (defn parse-res
   [res]
@@ -32,9 +40,9 @@
   "lookup streams"
   []
   (http/get "https://api.twitch.tv/kraken/streams?limit=5"
-    (fn [{:keys [status headers body error]}]
-      (if error
-        (println "Failed, exception is " error)
-        (->> (json/read-str body)
-            (parse-res)
-            (calculate-rankings))))))
+            (fn [{:keys [status headers body error]}]
+              (if error
+                (println "Failed, exception is " error)
+                (->> (json/read-str body)
+                     (parse-res)
+                     (calculate-rankings))))))
