@@ -6,7 +6,7 @@
             [util :as util]))
 
 (defroutes app-routes
-  (GET "/" [] (apply str (last @streams/history)))
+  (GET "/" [] (apply str (trends.streams/trending)))
   (GET "/lookup" [] (do
                       (streams/lookup)
                       "done!"))
